@@ -1,0 +1,757 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <title>지하철 길찾기</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+    <!-- Custom CSS: You can use this stylesheet to override any Bootstrap styles and/or apply your own styles -->
+    <style>
+        ::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+            background-color: #F5F5F5;
+            border-radius: 10px;}
+        ::-webkit-scrollbar {
+            width: 12px;
+            background-color: #F5F5F5; }
+        ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+            background-image: -webkit-gradient(linear, left top, right top, from(crimson), to(darkred));
+            background-image: -webkit-linear-gradient(left, crimson 0%, darkred 100%);
+            background-image: linear-gradient(to right, crimson 0%, darkred 100%); }
+        html, body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
+            scroll-behavior: smooth;
+            cursor:default;
+        }
+        body{overflow-x:hidden;}
+        a {
+            color: crimson;
+            -webkit-transition: all .35s;
+            -moz-transition: all .35s;
+            transition: all .35s;
+            cursor:pointer
+        }
+
+        a:hover,
+        a:focus {
+            color:darkred;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        input{
+            color:#000;
+        }
+        header {
+            background-image:url("https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/WUS5VgH/manhattan-skyline-view-background-subway-station-brooklyn-new-york-city-4k-nyc_v1jrvli4__F0000.png");
+            background-attachment:fixed;
+            background-size:cover;
+            background-position:center;
+            overflow:hidden;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            color: #fff;
+        }
+
+        header .header-content {
+            position: absolute;
+            width: 100%;
+            padding: 100px 15px 70px;
+            text-align: center;
+            top: 50%;
+            -webkit-transform: translateY(-50%);
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+        }
+
+        header .header-content .header-content-inner h1 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 50px;
+            font-weight: 300;
+        }
+
+        header .header-content .header-content-inner p {
+            margin-bottom: 50px;
+            font-size: 16px;
+            font-weight: 300;
+            color: rgba(255,255,255,.7);
+        }
+
+        @media(min-width:768px) {
+            header {
+                min-height: 100%;
+            }
+
+            header .header-content {
+                padding: 0 50px;
+            }
+
+            header .header-content .header-content-inner {
+                margin-right: auto;
+                margin-left: auto;
+                max-width: 1000px;
+            }
+
+            header .header-content .header-content-inner h1 {
+                font-size: 100px;
+            }
+
+            header .header-content .header-content-inner p {
+                margin-right: auto;
+                margin-left: auto;
+                max-width: 80%;
+                font-size: 18px;
+            }
+        }
+
+        .section-heading {
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .second {
+            height:100%;
+            color: #222;
+            text-align: center;
+        }
+        .content {padding: 100px 0;}
+
+        .content-2 {
+            color: #fff;
+            background-color: #222;
+        }
+
+        .content-3 {
+            color: #fff;
+            background-color: #222;
+        }
+        .content-4 {
+            text-align:center;
+        }
+        .promo,
+        .promo h3,
+        .promo a:link,
+        .promo a:visited,
+        .promo a:hover,
+        .promo a:active {
+            color: white;
+            text-shadow: 0px 0px 40px black;
+            text-decoration: none;
+        }
+
+        .promo-item {
+            height: 200px;
+            line-height: 180px;
+            text-align: center;
+        }
+
+        .promo-item:hover {
+            background-size: 110%;
+            border: 10px solid rgba(255,255,255,0.3);
+            line-height: 160px;
+        }
+
+        .promo-item h3 {
+            font-size: 40px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .item-1 {
+            background: url('https://i.pinimg.com/originals/72/d0/d5/72d0d5822f69ff4747ddaffe687b1eb1.jpg');
+        }
+
+        .item-2 {
+            background: url('http://wallpapersdsc.net/wp-content/uploads/2017/04/Subway-HD-Background-.jpg');
+        }
+
+        .item-3 {
+            background: url('http://www.vaio.or.kr/files/attach/images/9979/091/120/1920x1080(1600x900_1366x768)metro.jpg');
+        }
+
+        .item-1,
+        .item-2,
+        .item-3 {
+            background-size: cover;
+            background-position: 50% 50%;
+        }
+
+        .page-footer {
+            text-align: center;
+        }
+
+        .page-footer .contact {
+            background-image: url("https://i.pinimg.com/originals/7c/61/0b/7c610b80dd3aa4607fbec83cf12ac4cf.gif");
+            background-size: cover;
+            background-position: center;
+            background-attachment:fixed;
+            padding: 100px 0;
+            background-color: crimson;
+            color: #fff;
+        }
+
+        .page-footer .contact p {
+            font-size: 22px;
+            font-weight: 300;
+        }
+
+        .content-4 .glyphicon,
+        .page-footer .contact .glyphicon {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .page-footer .small-print {
+            padding: 50px 0 40px;
+            font-weight: 300;
+        }
+
+        .text-light {
+            color: rgba(255,255,255,.7);
+        }
+
+        .navbar-default {
+            border-color: rgba(34,34,34,.05);
+            background-color: #fff;
+            -webkit-transition: all .35s;
+            -moz-transition: all .35s;
+            transition: all .35s;
+        }
+
+        .navbar-default .navbar-header .navbar-brand {
+            color: crimson;
+        }
+
+        .navbar-default .navbar-header .navbar-brand:hover,
+        .navbar-default .navbar-header .navbar-brand:focus {
+            color: #eb3812;
+        }
+
+        .navbar-default .nav > li>a,
+        .navbar-default .nav>li>a:focus {
+            color: #222;
+        }
+
+        .navbar-default .nav > li>a:hover,
+        .navbar-default .nav>li>a:focus:hover {
+            color: crimson;
+        }
+
+        .navbar-default .nav > li.active>a,
+        .navbar-default .nav>li.active>a:focus {
+            color: crimson!important;
+            background-color: transparent;
+        }
+
+        .navbar-default .nav > li.active>a:hover,
+        .navbar-default .nav>li.active>a:focus:hover {
+            background-color: transparent;
+        }
+
+        @media(min-width:768px) {
+            .navbar-default {
+                border-color: rgba(255,255,255,.3);
+                background-color: transparent;
+            }
+
+            .navbar-default .navbar-header .navbar-brand {
+                color: rgba(255,255,255,.7);
+                letter-spacing: 0.5em;
+            }
+
+            .navbar-default .navbar-header .navbar-brand:hover,
+            .navbar-default .navbar-header .navbar-brand:focus {
+                color: #fff;
+            }
+
+            .navbar-default .nav > li>a,
+            .navbar-default .nav>li>a:focus {
+                color: rgba(255,255,255,.7);
+            }
+
+            .navbar-default .nav > li>a:hover,
+            .navbar-default .nav>li>a:focus:hover {
+                color: #fff;
+            }
+
+            .navbar-default.affix {
+                border-color: #fff;
+                background-color: #fff;
+                box-shadow: 0px 7px 20px 0px rgba(0,0,0,0.1);
+            }
+
+            .navbar-default.affix .navbar-header .navbar-brand {
+                letter-spacing: 0;
+                color: crimson;
+            }
+
+            .navbar-default.affix .navbar-header .navbar-brand:hover,
+            .navbar-default.affix .navbar-header .navbar-brand:focus {
+                color: #eb3812;
+            }
+
+            .navbar-default.affix .nav > li>a,
+            .navbar-default.affix .nav>li>a:focus {
+                color: #222;
+            }
+
+            .navbar-default.affix .nav > li>a:hover,
+            .navbar-default.affix .nav>li>a:focus:hover {
+                color: crimson;
+            }
+        }
+
+        .btn-default {
+            border-color: #fff;
+            color: #222;
+            background-color: #fff;
+            -webkit-transition: all .35s;
+            -moz-transition: all .35s;
+            transition: all .35s;
+        }
+
+        .btn-default:hover,
+        .btn-default:focus,
+        .btn-default.focus,
+        .btn-default:active,
+        .btn-default.active,
+        .open > .dropdown-toggle.btn-default {
+            border-color: #eee;
+            color: #222;
+            background-color: #eee;
+        }
+
+        .btn-default:active,
+        .btn-default.active,
+        .open > .dropdown-toggle.btn-default {
+            background-image: none;
+        }
+
+        .btn-default.disabled,
+        .btn-default[disabled],
+        fieldset[disabled] .btn-default,
+        .btn-default.disabled:hover,
+        .btn-default[disabled]:hover,
+        fieldset[disabled] .btn-default:hover,
+        .btn-default.disabled:focus,
+        .btn-default[disabled]:focus,
+        fieldset[disabled] .btn-default:focus,
+        .btn-default.disabled.focus,
+        .btn-default[disabled].focus,
+        fieldset[disabled] .btn-default.focus,
+        .btn-default.disabled:active,
+        .btn-default[disabled]:active,
+        fieldset[disabled] .btn-default:active,
+        .btn-default.disabled.active,
+        .btn-default[disabled].active,
+        fieldset[disabled] .btn-default.active {
+            border-color: #fff;
+            background-color: #fff;
+        }
+
+        .btn-default .badge {
+            color: #fff;
+            background-color: #222;
+        }
+
+        .btn-primary {
+            border-color: crimson;
+            color: #fff;
+            background-color: crimson;
+            -webkit-transition: all .35s;
+            -moz-transition: all .35s;
+            transition: all .35s;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus,
+        .btn-primary.focus,
+        .btn-primary:active,
+        .btn-primary.active,
+        .open > .dropdown-toggle.btn-primary {
+            border-color:maroon;
+            color: #fff;
+            background-color: maroon;
+        }
+
+        .btn-primary:active,
+        .btn-primary.active,
+        .open > .dropdown-toggle.btn-primary {
+            background-image: none;
+        }
+
+        .btn-primary.disabled,
+        .btn-primary[disabled],
+        fieldset[disabled] .btn-primary,
+        .btn-primary.disabled:hover,
+        .btn-primary[disabled]:hover,
+        fieldset[disabled] .btn-primary:hover,
+        .btn-primary.disabled:focus,
+        .btn-primary[disabled]:focus,
+        fieldset[disabled] .btn-primary:focus,
+        .btn-primary.disabled.focus,
+        .btn-primary[disabled].focus,
+        fieldset[disabled] .btn-primary.focus,
+        .btn-primary.disabled:active,
+        .btn-primary[disabled]:active,
+        fieldset[disabled] .btn-primary:active,
+        .btn-primary.disabled.active,
+        .btn-primary[disabled].active,
+        fieldset[disabled] .btn-primary.active {
+            border-color: crimson;
+            background-color: crimson;
+        }
+
+        .btn-primary .badge {
+            color: crimson;
+            background-color: #fff;
+        }
+
+
+        .btn {
+            border-radius: 300px;
+            text-transform: uppercase;
+        }
+
+        .btn-lg {
+            padding: 15px 30px;
+        }
+
+        ::-moz-selection {
+            text-shadow: none;
+            color: #fff;
+            background: darkred;
+        }
+
+        ::selection {
+            text-shadow: none;
+            color: #fff;
+            background: darkred;
+        }
+
+        img::selection {
+            color: #fff;
+            background: 0 0;
+        }
+
+        img::-moz-selection {
+            color: #fff;
+            background: 0 0;
+        }
+
+        .text-primary {
+            color: crimson;
+        }
+
+        .bg-primary {
+            background-color: crimson;
+        }
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Custom Fonts from Google -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body>
+
+<!-- Navigation -->
+<nav id="siteNav" class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <!-- Logo and responsive toggle -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">
+                <span class="glyphicon glyphicon-fire"></span>
+                GROUP 9
+            </a>
+        </div>
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li class="active">
+                    <a href="#">지하철 길찾기</a>
+                </li>
+                <li>
+                    <a href="#second">노선도</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">앱 소개<span class="caret"></span></a>
+                    <ul class="dropdown-menu" aria-labelledby="about-us">
+                        <li><a href="#func1">앉을확률</a></li>
+                        <li><a href="#func2">빠른 환승</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#footer">Contact</a>
+                </li>
+            </ul>
+
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container -->
+</nav>
+
+<!-- Header -->
+<header id="home">
+    <div class="header-content">
+        <div class="header-content-inner" id="output">
+            <form action="/result#second" method="POST">
+                <h1>지하철 길찾기</h1>
+                <p>요일,시간을 기준으로 앉을 확률을 계산해드립니다.</p>
+                <p>Google 지도에 경로를 나타내드립니다.</p>
+                <p id="clock" style = "font-size:50px"><script>
+                    function printTime() {
+                        var clock = document.getElementById("clock");
+                        var now = new Date();
+                        if (now.getDay()==0)
+                               var message="일요"
+                        else if(now.getDay()==6)
+                            var message ="토요"
+                        else
+                            var message ="평"
+                        var nowTime = message + "일 " + now.getHours() + "시 " + now.getMinutes() + "분 " + now.getSeconds() + "초";
+                        clock.innerHTML = nowTime;
+                        setTimeout("printTime()",1000);
+                    }
+                    window.onload = function() {
+                        printTime();
+                    }
+                </script></p>
+                <p id="inputStart">출발역: <input name="start"/></p>
+                <p id="inputStopOver" style="display:none;">경유역: <input name="stopover"/></p>
+                <p id="inputFinish">도착역: <input name="finish"/></p>
+                <a type="add" id="add" class="btn btn-primary btn-lg" onclick="add();">경유역추가</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="#second">
+                    <input type = "submit" value = "경로 찾기" class="btn btn-primary btn-lg" onclick="draw()"/>
+                </a>
+            </form>
+        </div>
+    </div>
+</header>
+<!-- second Section -->
+<section class="second" id="second">
+    <div align="center" style="width:100%;height:100%;position:relative;">
+        <div id ="map" style="width:100%;height:100%;"></div>
+        <div style="position:absolute;display:block;bottom:0;width:100%;padding:50px;background-color:rgba(255,255,255,0.5);">
+            <p>경로: {{ result }}</p>
+            <p>소요시간: {{ result2 }}</p>
+            <p>{{ result3 }}</p>
+            <a href="#home" class="btn btn-primary btn-lg">다른길찾기</a>
+        </div>
+    </div>
+</section>
+<!-- Content 2 -->
+<section class="content content-2" id="func1">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <img class="img-responsive img-circle center-block" src="https://cdn.suwalls.com/wallpapers/photography/subway-cart-14620-1920x1200.jpg" alt="">
+            </div>
+            <div class="col-sm-6">
+                <h2 class="section-header">앉을확률</h2>
+                <p class="lead text-light">지하철에서 앉을 수 있는 확률을 구하여 여러분의 신체적, 정신적 건강을 지켜드립니다</p>
+                <a href="#" class="btn btn-default btn-lg">사용해보기</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Content 1 -->
+<section class="content" id="func2">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h2 class="section-header">이동경로표현</h2>
+                <p class="lead text-muted">출발역과 도착역을 입력하면 경도 위도를 통해 Google지도에 경로를 표현해줍니다.</p>
+                <a href="#" class="btn btn-primary btn-lg">사용해보기</a>
+            </div>
+            <div class="col-sm-6">
+                <img class="img-responsive img-circle center-block" src="http://m.segye.com/content/image/2015/04/03/20150403002472_0.jpg" alt="">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Promos -->
+<div class="container-fluid" id="nothing4">
+    <div class="row promo">
+        <a>
+            <div class="col-md-4 promo-item item-1">
+                <h3>
+                    지금껏 그 누구도 경험하지 못했던
+                </h3>
+            </div>
+        </a>
+        <a>
+            <div class="col-md-4 promo-item item-2">
+                <h3>
+                    지하철의 새로운 패러다임
+                </h3>
+            </div>
+        </a>
+
+        <a>
+            <div class="col-md-4 promo-item item-3">
+                <h3>
+                    9조가 만들어갑니다
+                </h3>
+            </div>
+        </a>
+    </div>
+</div><!-- /.container-fluid -->
+
+<!-- Content 3 -->
+<section class="content content-4" id="nothing5">
+    <div class="container">
+        <h2 class="section-header"><span class="glyphicon glyphicon-ok text-primary"></span><br>자료9조</h2>
+        <p class="lead text-muted">지하철 출발역과 도착역을 입력받아 빠른 환승 및 앉을 확률을 구하는 웹 어플리케이션</p>
+        <p class="lead text-muted">사용언어: HTML, CSS, SASS, Javascript, Python, Flask</p>
+        <a href="#" class="btn btn-primary btn-lg">사용해보기</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="page-footer" id="footer">
+
+    <!-- Contact Us -->
+    <div class="contact">
+        <div class="container" style="text-shadow:0 0 30px black;">
+            <h2 class="section-heading">역할분담</h2>
+            <p>9조</p>
+            <p>강신환: DB구축, 백엔드</p>
+            <p>이종호: 백엔드</p>
+            <p>최석환: 중도휴학</p>
+            <p>최정원: 프론트엔드</p>
+        </div>
+    </div>
+
+    <!-- Copyright etc -->
+    <div class="small-print">
+        <div class="container">
+            <p>Copyright &copy; 자료9조 2018 </p>
+        </div>
+    </div>
+
+</footer>
+
+<!-- jQuery -->
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+<!-- Plugin JavaScript -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
+
+<!-- Custom Javascript -->
+<script>
+    // Offset for Site Navigation
+    $('#siteNav').affix({
+        offset: {
+            top: 100
+        }
+    });
+</script>
+<script>
+    isStop=false;
+    // Offset for Site Navigation
+    $('#siteNav').affix({
+        offset: {
+            top: 100
+        }
+    });
+    function add(){
+        $('#inputStopOver').toggle("slow");
+        $('#add').html("경유역"+(isStop?"추가":"제거"));
+        isStop = !isStop;
+    }function initMap() {
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,//적당히조절
+            center: {lat: 37.5651, lng: 126.98955},//적당히조절
+            mapTypeId: 'roadmap'
+        });
+        directionsDisplay.setMap(map);
+        // var subway = [
+        //     //{{ result3 }}
+        //     //예시. 안암에서 신촌가는 길 자바스크립트 주석은 한줄은//내용, 여러줄은 /*내용*/으로 처리합니다.
+        //     //lat, lng 위도경도. line 호선(환승은 0호선으로)
+
+        //     {lat: 37.586272, lng: 127.029025},//안암
+        //     {lat: 37.585286, lng: 127.019381},//보문
+        //     {lat: 37.579661, lng: 127.01524},//창신
+        //     {lat: 37.572627, lng: 127.016429},//동묘앞
+        //     {lat: 37.565972, lng: 127.01782},//신당
+        //     {lat: 37.565138, lng: 127.007896},//동대문역사문화공원
+        //     {lat: 37.566941, lng: 126.998079},//을지로4가
+        //     {lat: 37.566295, lng: 126.99191},//을지로3가
+        //     {lat: 37.566014, lng: 126.982618},//을지로입구
+        //     {lat: 37.564718, lng: 126.977108},//시청
+        //     {lat: 37.559973, lng: 126.963672},//충정로
+        //     {lat: 37.557345, lng: 126.956141},//아현
+        //     {lat: 37.556733, lng: 126.946013},//이대
+        //     {lat: 37.555134, lng: 126.936893}//신촌
+        // ];
+        var subway={{ result4 }};
+        // var lines = [//아이콘이랑 색은 아무거나 넣었어요. 나중에 바꿀게요
+        //     "http://maps.google.com/mapfiles/kml/paddle/wht-stars.png",//환승
+        //     "http://maps.google.com/mapfiles/kml/paddle/red-blank.png",//1호선
+        //     "http://maps.google.com/mapfiles/kml/paddle/ylw-blank.png",//2호선
+        //     "http://maps.google.com/mapfiles/kml/paddle/pink-blank.png",//3호선
+        //     "http://maps.google.com/mapfiles/kml/paddle/grn-blank.png",//4호선
+        //     "http://maps.google.com/mapfiles/kml/paddle/purple-blank.png",//5호선
+        //     "http://maps.google.com/mapfiles/kml/paddle/orange-blank.png",//6호선
+        //     "http://maps.google.com/mapfiles/kml/paddle/blu-blank.png",//7호선
+        //     "http://maps.google.com/mapfiles/kml/paddle/ltb-blank.png",//8호선
+        // ]
+        var subwayPath = new google.maps.Polyline({
+            path: subway,
+            geodesic: true,
+            strokeColor: "crimson",
+            strokeOpacity: 1.0,
+            strokeWeight: 4
+        });
+        subway.forEach(function (feature) {
+            var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(feature.lat, feature.lng),
+                icon:  "http://maps.google.com/mapfiles/kml/paddle/red-blank.png",
+                map: map
+            });
+        });
+        subwayPath.setMap(map);
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDGhf-ulPvN3urT7FDQTj-4vInJ4pXq4qc&callback=initMap">
+</script>
+</body>
+
+</html>
